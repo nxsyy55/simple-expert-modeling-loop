@@ -10,7 +10,9 @@ Release name: **Simple Expert-Guided Modeling Loop** (`simple-expert-modeling-lo
 - [x] Use a public GitHub noreply identity for the initial commit.
 - [x] Include the MIT license, dependency declaration, locked versions, setup script, and knowledge/tool examples.
 - [x] Recheck lock consistency, Python syntax and relative documentation links after naming changes.
-- [x] Retain the verified core Python source unchanged; record the synthetic flow and fault checks in `docs/validation.md`.
+- [x] For the initial snapshot, retain the verified core Python source unchanged; record subsequent code changes and their checks in `docs/validation.md`.
 - [x] State that a real new Codex research/expert cycle and research effectiveness have not been validated.
 
 The owner explicitly authorized creation of a new public repository and publication of this reviewed snapshot. Local audit details remain excluded. A future release should repeat the content scan and check the staged Git tree rather than relying only on `.gitignore`.
+
+Portability follow-up: shared uv setup, explicit external CLI prerequisites, process-tree cleanup and its limits are documented. Linux/macOS and real model integration remain unverified.

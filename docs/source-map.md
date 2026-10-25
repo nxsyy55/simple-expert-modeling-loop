@@ -88,7 +88,7 @@
 | [production_session.py](../production_session.py#L48) | `build_command` | 48 |
 | [production_session.py](../production_session.py#L72) | `_event_failure` | 72 |
 | [production_session.py](../production_session.py#L94) | `_process_tree_cleanup` | 94 |
-| [production_session.py](../production_session.py#L134) | `main` | 134 |
+| [production_session.py](../production_session.py#L140) | `main` | 140 |
 | [research_transport.py](../research_transport.py#L20) | `schema` | 20 |
 | [research_transport.py](../research_transport.py#L39) | `Transport.__init__` | 39 |
 | [research_transport.py](../research_transport.py#L62) | `Transport.available_tools` | 62 |
@@ -102,7 +102,7 @@
 | [research_transport.py](../research_transport.py#L180) | `Transport.training` | 180 |
 | [research_transport.py](../research_transport.py#L203) | `Transport.training_status` | 203 |
 | [research_transport.py](../research_transport.py#L207) | `Transport.close` | 207 |
-| [research_transport.py](../research_transport.py#L219) | `serve` | 219 |
+| [research_transport.py](../research_transport.py#L217) | `serve` | 217 |
 | [session_train.py](../session_train.py#L17) | `source_fingerprint` | 17 |
 | [session_train.py](../session_train.py#L26) | `sha` | 26 |
 | [session_train.py](../session_train.py#L30) | `atomic_json` | 30 |

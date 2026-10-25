@@ -6,16 +6,32 @@ The framework grew out of modeling experiments that did not meet their research 
 
 ## Setup
 
-1. Put a binary-labeled `train.csv` at `workspace/data/raw/train.csv`. Configure the target and optional ID in `project.toml`.
-2. Run `./setup.ps1` in PowerShell. It prepares Python 3.11 with `uv`, installs the locked dependencies, and checks Codex CLI availability. It does not fit, call a model, or alter project knowledge.
-3. Run `uv run python loop_cli.py prepare` to create or verify the fixed stratified holdout. Existing split files are checked by content hash and are never silently replaced.
-4. Run `uv run python loop_cli.py run --rounds 10` to train the shipped baseline once and then start serial research. This command may call Codex. The baseline is idempotent: a saved receipt is verified and recovered, never retrained.
+Install `uv` and a compatible, authenticated Codex CLI first. Run these commands from the repository root in PowerShell, bash, or zsh:
+
+```text
+uv python install 3.11
+uv sync --locked
+uv run --locked python production_session.py check-host
+```
+
+`setup.ps1` is an optional PowerShell wrapper, not a required Windows dependency. The Python core targets Windows, Linux and macOS; only Windows has local execution evidence. Linux/macOS and a real post-extraction Codex/MCP cycle remain unverified. `check-host` checks CLI bootstrap only, not login, model access or MCP execution. See [prerequisites and compatibility](docs/usage.md).
+
+Before preparing data, add any required ML dependencies with `uv add PACKAGE`, configure `project.toml`, and fill in `templates/project/program.md` and `templates/project/knowledge/research.md`. Put your binary-labeled CSV at `workspace/data/raw/train.csv`. Set the target and optional ID (`id = ""` disables IDs). Then:
+
+```text
+uv run --locked python loop_cli.py prepare
+uv run --locked python loop_cli.py run --rounds 1
+uv run --locked python loop_cli.py status
+uv run --locked python loop_cli.py audit
+```
+
+`run` trains the baseline once and may make a real model call. Inspect the accepted result before increasing the cumulative target. A model-failed round also consumes the target; completion alone does not demonstrate a working modeling cycle.
 
 `status` and `audit` are read-only. `continue` resumes the saved task without replaying an unknown Codex call. `--rounds` is a cumulative accepted-round target. `review` explicitly requests one expert update. Periodic reviews require a configured expert model and a positive cadence, for example:
 
-```powershell
-uv run python loop_cli.py configure --expert-model gpt-6.1-sol --review-every 5
-uv run python loop_cli.py run --rounds 10
+```text
+uv run --locked python loop_cli.py configure --expert-model gpt-6.1-sol --review-every 5
+uv run --locked python loop_cli.py run --rounds 10
 ```
 
 The default research model is `gpt-6-luna`; research model names and reasoning effort are configurable in `project.toml`; expert cadence is configured through `loop_cli.py configure`. Other providers are not included.

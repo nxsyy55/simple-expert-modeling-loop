@@ -11,10 +11,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Python 3.11 preparation failed.' }
     uv sync --locked
     if ($LASTEXITCODE -ne 0) { throw 'Locked dependency installation failed.' }
-    & '.\.venv\Scripts\python.exe' -c 'import joblib, numpy, pandas, sklearn; print("Base imports: OK")'
+    uv run --locked python -c 'import joblib, numpy, pandas, sklearn, psutil; print("Base imports: OK")'
     if ($LASTEXITCODE -ne 0) { throw 'Base imports failed.' }
-    & '.\.venv\Scripts\python.exe' production_session.py check-host
-    if ($LASTEXITCODE -ne 0) { Write-Warning 'Codex CLI is unavailable. Configure your existing Codex CLI/login before a research run.' }
+    uv run --locked python production_session.py check-host
+    if ($LASTEXITCODE -ne 0) { throw 'Codex bootstrap failed. Dependencies are installed, but research is not ready.' }
     Write-Host 'Dependencies ready. Read README.md before prepare/run. No fitting or model call was started.'
 } finally {
     $env:UV_CACHE_DIR = $PreviousCache

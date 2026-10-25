@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "Experimental, supervised Codex-based serial ML research loop"
 requires-python = ">=3.11,<3.12"
 dependencies = [
+  "psutil>=7,<8",
   "joblib>=1.4,<2",
   "numpy>=1.26,<3",
   "pandas>=2.2,<3",

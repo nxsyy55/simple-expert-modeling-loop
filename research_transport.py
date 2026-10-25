@@ -205,14 +205,12 @@ class Transport:
         return self.wait(self.start(self.packet['training']['status_command'],'status'),20)
 
     def close(self):
+        from production_session import _process_tree_cleanup
         for identifier,job in self.jobs.items():
             if job['process'].poll() is None:
-                if os.name=='nt':
-                    subprocess.run(['taskkill.exe','/PID',str(job['process'].pid),'/T','/F'],
-                        capture_output=True,creationflags=subprocess.CREATE_NO_WINDOW)
-                else:
-                    job['process'].terminate()
-                self.record(event='interrupted',job_id=identifier,pid=job['process'].pid,kind=job['kind'])
+                cleanup = _process_tree_cleanup(job['process'])
+                self.record(event='interrupted',job_id=identifier,pid=job['process'].pid,
+                            kind=job['kind'],cleanup=cleanup)
             else:
                 self.wait(identifier,0)
 

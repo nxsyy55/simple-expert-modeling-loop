@@ -19,3 +19,9 @@ Not tested: a real new model session, long-running multi-cycle exploration, GPU 
 One-off fixtures, source hashes and detailed outputs are retained only in a local, excluded audit directory; they are not shipped as a development test suite. The public tree contains no competition data, models, submissions, long handoffs, retired projects, GUI, or historical authorization files.
 
 The practical boundary is detailed in [file-flow.md](file-flow.md). The source is distributed under the MIT License; dependency licenses remain with their respective authors.
+
+## Portability follow-up — 2026-10-25
+
+Installation now uses platform-neutral uv commands; PowerShell is optional. Added locked psutil for shared process-tree cleanup, including observed descendants that start separate sessions. Windows live subprocess checks passed for parent/child termination, Transport shutdown logging and conservative reporting when a parent has already exited. Lock consistency, PowerShell syntax and CLI help/status/audit passed. Codex bootstrap failed under the supervisor filesystem sandbox and passed when the same read-only check ran with host permissions; no model was called. These checks use sleeping dummy processes, not training or model calls; fixtures stay in ignored local audit storage.
+
+Cleanup snapshots process ancestry and waits for observed targets. It cannot prove absence of already orphaned children or those created during enumeration, and hard process termination may bypass cleanup. Linux/macOS runtime validation and a real Codex/MCP cycle are still outstanding; no broader platform-support claim is made. The lockfile changed: existing experiment identities must not be silently reused.

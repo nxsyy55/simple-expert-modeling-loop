@@ -40,7 +40,7 @@ def check_host(cli):
                             errors="replace", timeout=30)
     if result.returncode or "could not create PATH aliases" in result.stderr:
         raise RuntimeError("Codex host bootstrap failed before model dispatch. Launch the software "
-                           "through the approved Windows host entry, outside the supervisor sandbox. "
+                           "from a terminal with the required host permissions. "
                            + result.stderr.strip())
     return {"status": "host_preflight_passed", "cli": str(cli), "model_called": False}
 
@@ -92,42 +92,48 @@ def _event_failure(stdout):
 
 
 def _process_tree_cleanup(process):
-    result = {"attempted": True, "method": None, "command_exit_code": None,
-              "parent_exit_code": None, "parent_exited": False, "error": None}
+    """Stop a snapshot of an owned process tree, including detached sessions.
+
+    This is best-effort cleanup, not containment: already orphaned processes or
+    descendants created during enumeration cannot be proven absent.
+    """
+    import psutil
+
+    result = {"attempted": True, "method": "psutil process-tree snapshot",
+              "command_exit_code": None, "parent_exit_code": None,
+              "parent_exited": False, "error": None, "observed_pids": []}
+    errors = []
+    targets = []
     try:
-        if os.name == "nt":
-            result["method"] = "taskkill /PID <pid> /T /F"
-            killed = subprocess.run(
-                ["taskkill", "/PID", str(process.pid), "/T", "/F"],
-                capture_output=True, text=True, timeout=2, check=False,
-            )
-            result["command_exit_code"] = killed.returncode
-            result["output"] = (killed.stdout + killed.stderr).strip()
-            if killed.returncode != 0:
-                result["error"] = "taskkill failed to terminate the owned process tree"
-                if process.poll() is None:
-                    process.kill()
-                    result["direct_process_kill"] = True
-        else:
-            result["method"] = "kill process group"
-            os.killpg(process.pid, signal.SIGKILL)
-            result["command_exit_code"] = 0
-    except Exception as exc:  # Keep cleanup failure evidence with the timeout.
-        result["error"] = f"{type(exc).__name__}: {exc}"
+        if process.poll() is not None:
+            raise RuntimeError("Parent already exited; descendant ownership is unknown")
+        parent = psutil.Process(process.pid)
+        targets = parent.children(recursive=True) + [parent]
+        result["observed_pids"] = [p.pid for p in targets]
+        for target in reversed(targets):
+            try:
+                target.kill()
+            except psutil.NoSuchProcess:
+                pass
+            except psutil.Error as exc:
+                errors.append(f"{type(exc).__name__}: pid {target.pid}")
+        _, alive = psutil.wait_procs(targets, timeout=5)
+        # POSIX zombies have terminated but await reaping by their new parent.
+        alive = [p for p in alive if p.is_running() and p.status() != psutil.STATUS_ZOMBIE]
+        if alive:
+            errors.append("Processes still alive: " + str([p.pid for p in alive]))
+    except Exception as exc:
+        errors.append(f"{type(exc).__name__}: {exc}")
     try:
+        if process.poll() is None:
+            process.kill()
         result["parent_exit_code"] = process.wait(timeout=5)
         result["parent_exited"] = True
     except Exception as exc:
-        result["error"] = (result["error"] + "; " if result["error"] else "") + f"wait: {type(exc).__name__}: {exc}"
-        try:
-            process.kill()
-            result["direct_process_kill"] = True
-            result["parent_exit_code"] = process.wait(timeout=5)
-            result["parent_exited"] = True
-        except Exception as kill_exc:
-            result["error"] += f"; direct kill: {type(kill_exc).__name__}: {kill_exc}"
-    result["tree_termination_complete"] = bool(result["parent_exited"] and not result.get("error")
-                                                and (os.name != "nt" or result["command_exit_code"] == 0))
+        errors.append(f"wait: {type(exc).__name__}: {exc}")
+    result["error"] = "; ".join(errors) or None
+    result["tree_termination_complete"] = bool(targets and result["parent_exited"] and not errors)
+    result["command_exit_code"] = 0 if result["tree_termination_complete"] else None
     return result
 
 
