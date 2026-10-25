@@ -1,0 +1,23 @@
+flowchart TD
+  A[用户配置 project.toml / configure] --> B[prepare 固定数据划分]
+  B --> S[run 显式建立或接收 baseline]
+  S --> C[Controller 项目锁 / 校验 C01]
+  C --> D{停止或累计目标已到?}
+  D -->|是| Z[stopped / completed 不补尾部专家]
+  D -->|否| E{专家周期到期或显式 review?}
+  E -->|研究| F[冻结 C02 + workflow + history + knowledge]
+  F --> G[preflight / active_task / Codex argv]
+  G --> H[研究 files / python / training / wait]
+  H --> I[一次 fit worker → 保存模型 → 新进程 reload]
+  I --> J[receipt / artifacts / probe identity]
+  J --> K[独立 Eva 只加载模型 / 固定 holdout]
+  K --> L[C03 feedback → delta settlement → C01 count+1]
+  L --> D
+  E -->|专家| M[专家 C02 冻结历史 / parents / increments]
+  M --> N[Codex files-only 写 research.md + plan.json]
+  N --> O[验证 parent / evidence / coverage / 必留任务]
+  O --> P[publication manifest prepared → 两文件替换 → complete]
+  P --> Q[C01 review_cycle_start=current_round 不加轮数]
+  Q --> D
+  P -.下一轮知识和计划.-> F
+  L -.历史候选和正式结果.-> M

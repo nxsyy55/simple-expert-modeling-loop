@@ -1,0 +1,18 @@
+[project]
+name = "your-project-name"
+
+[data]
+train = "workspace/data/raw/train.csv"
+test = "workspace/data/raw/test.csv"
+target = "target"
+id = "id"
+
+[candidate]
+source = "workspace/train.py"
+
+[evaluation]
+metric = "roc_auc"
+holdout_fraction = 0.2
+seed = 42
+research_model = "gpt-6-luna"
+research_effort = "high"

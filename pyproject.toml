@@ -1,0 +1,14 @@
+[project]
+name = "simple-expert-modeling-loop"
+version = "0.1.0"
+description = "Experimental, supervised Codex-based serial ML research loop"
+requires-python = ">=3.11,<3.12"
+dependencies = [
+  "joblib>=1.4,<2",
+  "numpy>=1.26,<3",
+  "pandas>=2.2,<3",
+  "scikit-learn>=1.5,<2",
+]
+
+[tool.uv]
+package = false
