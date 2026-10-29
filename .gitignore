@@ -20,3 +20,5 @@ workspace/baseline/
 workspace/writer.lock
 workspace/*.py
 workspace/knowledge/
+
+tools/report/node_modules/

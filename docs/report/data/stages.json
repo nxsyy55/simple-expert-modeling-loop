@@ -1,0 +1,51 @@
+[
+  {
+    "stage": "holdout",
+    "records": 51,
+    "scored": 51,
+    "statuses": {
+      "success": 51
+    },
+    "best_score": 0.9602188831883899
+  },
+  {
+    "stage": "cv3",
+    "records": 35,
+    "scored": 34,
+    "statuses": {
+      "success": 34,
+      "crash": 1
+    },
+    "best_score": 0.9598139671460357
+  },
+  {
+    "stage": "holdout-v2",
+    "records": 30,
+    "scored": 30,
+    "statuses": {
+      "success": 30
+    },
+    "best_score": 0.9603600661372402
+  },
+  {
+    "stage": "production-v1",
+    "records": 57,
+    "scored": 53,
+    "statuses": {
+      "success": 53,
+      "crash": 4
+    },
+    "best_score": 0.9609210849879137
+  },
+  {
+    "stage": "console",
+    "records": 133,
+    "scored": 111,
+    "statuses": {
+      "model_failed": 20,
+      "success": 111,
+      "duplicate": 2
+    },
+    "best_score": 0.9612330088681923
+  }
+]

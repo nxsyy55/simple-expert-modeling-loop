@@ -4,6 +4,10 @@ Simple Expert-Guided Modeling Loop is an experimental, supervised framework for 
 
 The framework grew out of modeling experiments that did not meet their research goals, and further research investment was stopped. A small number of successful training/evaluation runs did not demonstrate a research gain or reliable autonomous operation. This is a practical example, not evidence that every AI research loop is ineffective. Expect to supervise runs and debug candidate code.
 
+## Technical report
+
+Read [A personal test of autonomous machine learning](https://nxsyy55.github.io/simple-expert-modeling-loop/report/) ([Markdown](docs/report/report.md), [numerical appendix](docs/report/data/README.md)). This public working draft documents the earlier TrafficFlowBench and Kaggle experiments: repeated work, measurable gains, human guidance, and resource limits. Its 306 historical ledger entries are not 306 independent research ideas. It is under author review, not peer reviewed, and does not validate this extracted framework release. Full historical reports and raw call traces are not published. A Chinese edition is planned after revision.
+
 ## Setup
 
 Install `uv` and a compatible, authenticated Codex CLI first. Run these commands from the repository root in PowerShell, bash, or zsh:

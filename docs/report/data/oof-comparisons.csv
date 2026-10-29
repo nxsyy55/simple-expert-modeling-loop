@@ -1,0 +1,5 @@
+group,fold_average_minus_single_auc,learned_minus_fixed_auc,construction_time_ratio
+1,0.000193806486,-5.76714e-7,4.8
+2,0.000064166091,-3.49298e-7,5.39
+3,0.00007783361,-5.86853e-7,5.26
+4,0.000019846241,-2.52248e-7,4.79
